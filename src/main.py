@@ -53,6 +53,12 @@ def handle_users():
     return "Invalid Method", 404
 
 
+@app.route('/testing', methods=['POST'])
+def test():
+    return jsonify({'token':'hello world'})
+    return jsonify(request.get_json())
+
+
 @app.route('/register', methods=['POST'])
 def handle_register():
 
