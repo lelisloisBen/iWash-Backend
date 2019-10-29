@@ -2,13 +2,13 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import hashlib
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
-from models import db
-from models import Users
+from models import db, Users
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -58,6 +58,23 @@ def test():
     return jsonify({'token':'hello world'})
     return jsonify(request.get_json())
 
+@app.route('/login', methods=['POST'])
+def handle_login():
+
+    body = request.get_json()
+
+    string = body['password']
+
+    m = hashlib.sha256()
+    m.update(string.encode('utf-8'))
+
+    user = Users.query.filter_by(email=body['email'], password=m.hexdigest()).first()
+
+    if not user:
+        return 'User not found', 404
+
+    return 'token', 200
+
 
 @app.route('/register', methods=['POST'])
 def handle_register():
@@ -79,11 +96,17 @@ def handle_register():
     if 'email' not in body:
         raise APIException('You need to specify the email', status_code=400)
 
+    string = body['password']
+
+    m = hashlib.sha256()
+    m.update(string.encode('utf-8'))
+
+
     db.session.add(Users(
         email = body['email'],
         firstname = body['firstname'],
         lastname = body['lastname'],
-        password = body['password']
+        password = m.hexdigest()
     ))
     db.session.commit()
 
