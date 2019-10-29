@@ -75,9 +75,9 @@ def handle_register():
 
     db.session.add(Users(
         email = body['email'],
-        firstname = body['samir'],
-        lastname = body['benzada'],
-        password = body['123456']
+        firstname = body['firstname'],
+        lastname = body['lastname'],
+        password = body['password']
     ))
     db.session.commit()
 
