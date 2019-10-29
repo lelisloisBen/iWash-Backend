@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from models import db
-#from models import Person
+from models import Users
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -36,6 +36,37 @@ def handle_person():
     }
 
     return jsonify(response_body), 200
+
+@app.route('/users', methods=['GET'])
+def handle_users():
+
+    if request.method == 'GET':
+        users = Users.query.all()
+
+        if not users:
+            return jsonify({'msg':'User not found'}), 404
+
+        return jsonify( [x.serialize() for x in users] ), 200
+
+
+
+    return "Invalid Method", 404
+
+
+@app.route('/fill_database')
+def fill():
+
+    body = request.get_json()
+
+    db.session.add(Users(
+        email = body['email'],
+        firstname = 'samir',
+        lastname = 'benzada',
+        password = '123456'
+    ))
+    db.session.commit()
+
+    return 'success'
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
