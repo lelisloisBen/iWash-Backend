@@ -58,6 +58,21 @@ def handle_register():
 
     body = request.get_json()
 
+    if body is None:
+        raise APIException("You need to specify the request body as a json object", status_code=400)
+    if 'firstname' not in body and 'lastname' not in body:
+        raise APIException("You need to specify the first name and last name", status_code=400)
+    if 'password' not in body and 'email' not in body:
+        raise APIException("You need to specify the password and email", status_code=400)
+    if 'firstname' not in body:
+        raise APIException('You need to specify the first name', status_code=400)
+    if 'lastname' not in body:
+        raise APIException('You need to specify the last name', status_code=400)
+    if 'password' not in body:
+        raise APIException('You need to specify the password', status_code=400)
+    if 'email' not in body:
+        raise APIException('You need to specify the email', status_code=400)
+
     db.session.add(Users(
         email = body['email'],
         firstname = body['samir'],
