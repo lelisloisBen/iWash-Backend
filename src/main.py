@@ -53,16 +53,16 @@ def handle_users():
     return "Invalid Method", 404
 
 
-@app.route('/fill_database')
-def fill():
+@app.route('/register', methods=['POST'])
+def handle_register():
 
     body = request.get_json()
 
     db.session.add(Users(
         email = body['email'],
-        firstname = 'samir',
-        lastname = 'benzada',
-        password = '123456'
+        firstname = body['samir'],
+        lastname = body['benzada'],
+        password = body['123456']
     ))
     db.session.commit()
 
