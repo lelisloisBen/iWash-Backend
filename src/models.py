@@ -16,6 +16,5 @@ class Users(db.Model):
         return {
             "email": self.email,
             "firstname": self.firstname,
-            "MY LAST NAME": self.lastname,
-            "weather": "rainy"
+            "lastname": self.lastname
         }
