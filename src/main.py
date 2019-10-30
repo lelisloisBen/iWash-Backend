@@ -9,6 +9,8 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from models import db, Users
+from flask_jwt_simple import JWTManager, jwt_required, create_jwt
+
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -17,6 +19,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
+
+app.config['JWT_SECRET_KEY'] = 'dfsh3289349yhoelqwru9g'
+jwt = JWTManager(app)
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -73,7 +78,12 @@ def handle_login():
     if not user:
         return 'User not found', 404
 
-    return 'token', 200
+    return jsonify({
+              'token': create_jwt(identity=1),
+              'email': user.email,
+              'firstname': user.firstname,
+              'lastname': user.lastname
+              })
 
 
 @app.route('/register', methods=['POST'])
